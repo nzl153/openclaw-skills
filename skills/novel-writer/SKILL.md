@@ -9,21 +9,24 @@ description: Write and manage serialized Chinese webnovels for 番茄小说 and 
 
 ### Session Start: Load Story State
 
-At the start of each writing session, read the story save file to refresh memory:
+At the start of each writing session, **按层级顺序读取存档**（详见下方📁存档系统）：
 
 ```
-references/<novel-name>-存档.md
+references/《书名》/
 ```
 
-This file contains: last chapter summary, current arc status, character states, next planned scene, and unresolved threads.
+读取顺序（层级式，不跳步）：
+1. **第一层·必读少量**: 5-已纠正错误.md → 0-设定速查.md → 2-剧情进度.md（当前计划）
+2. **第二层·必读略多**: 1-角色档案.md → 3-章节摘要.md（近3章）
+3. **第三层·按需**: 4-时间线.md / 更早的章节摘要
 
 ### Chapter Writing
 
-1. **Load context**: Read archive → understand where the story is
-2. **Review character/villain/plot tracking** from the save file
+1. **Load context**: 按层级顺序读存档 → 确认当前写到哪了
+2. **Review character/villain/plot tracking**: 扫一眼角色表和伏笔清单
 3. **Write draft chapter** (target: 2000-4000 characters for 番茄)
 4. **User reviews** and gives feedback → iterate
-5. **Update save file** with new chapter summary and next plans
+5. **Update存档**: 更新2-剧情进度.md（进度+伏笔）+ 3-章节摘要.md（新章）+ 1-角色档案.md（实力变化）
 
 ### Chapter Structure (番茄)
 
@@ -57,62 +60,154 @@ Ask the user to define their preferred style on the first session, then record i
 - 主角: 聪明、嘴贫、遇到大事不怂
 - 世界: 基于游戏设定，但现实化处理
 
-## Story Save File Format
+## 📁 存档系统（长篇小说专用）
 
-Each novel has its own 存档 file in `references/`:
+几十万字的长篇小说，**一个存档文件不够**。
+每本书在 `references/` 下创建一个以书名命名的目录，拆成多个文件：
 
-```markdown
-# <书名>-存档
-
-## 上次写作会话
-- 日期: YYYY-MM-DD
-- 最后写到的章节: 第X章
-- 最后写到的场景: [简述]
-
-## 当前章节/下一章计划
-- 当前/下一章标题:
-- 本章目标:
-- 需要出现的角色:
-- 需要推进的剧情线:
-- 待解决的伏笔:
-
-## 角色状态
-### 主角: [名字]
-- 当前能力/实力阶段:
-- 当前所在位置:
-- 当前目标:
-- 当前携带物品/金手指状态:
-- 情绪状态:
-
-### 女主角/金手指: [名字]
-- 当前与主角关系状态:
-- 阶段性进展:
-- 特殊能力/功能:
-
-### 配角
-- [名字]: [当前状态和位置]
-
-## 世界进展
-- 当前主线:
-- 已完成的关键事件:
-- 进行中的危机/任务:
-- 世界背景逐步揭露到哪一步:
-
-## 未使用伏笔/素材
-- [列表，待用的伏笔、角色、设定等]
-
-## 下章建议方向
-- [写作助手给的建议及待办]
+```
+references/
+  《书名》/
+    ├── 0-设定速查.md          # 世界观、力量体系、核心规则（基本不变）
+    ├── 1-角色档案.md          # 角色详细表（含实力变化记录）
+    ├── 2-剧情进度.md          # 当前章节计划、未解伏笔、待办
+    ├── 3-章节摘要.md          # 每章一句话+结尾场景（快速翻查前文）
+    ├── 4-时间线.md            # 小说内日期/天数的变化
+    └── 5-已纠正错误.md        # ⚠️ 写作前必读！知乐纠正过的坑
 ```
 
-### When No Save File Exists
+---
 
-If no save file exists, this is a new novel. Create one by asking the user:
-1. Book title and genre
-2. Core premise (one sentence)
-3. Main characters
-4. Key world-building rules
-5. Writing preferences (vibe, pace, style)
+### ⚡ 写作前必读顺序（层级式）
+
+每次新会话开始写本章前，**按这个顺序读**，不跳步：
+
+```
+第一层：【必读·少量】
+  ① 5-已纠正错误.md          ← 30秒扫完，确认没再犯过的坑
+  ② 0-设定速查.md            ← 1分钟扫完世界观和力量体系
+  ③ 2-剧情进度.md → 当前章节计划  ← 知道写到哪了
+
+第二层：【必读·略多】
+  ④ 1-角色档案.md → 角色表  ← 扫角色表和短期变动群
+  ⑤ 3-章节摘要.md → 前3章   ← 看最近3章写了什么
+
+第三层：【按需查阅】
+  ⑥ 4-时间线.md              ← 需要确认小说内天数时再读
+  ⑦ 3-章节摘要.md → 更早章节 ← 需要查前文伏笔时再翻
+```
+
+> 原则：**必读文件尽量短**，不超过100行。长内容拆到独立的文件中，需要时再查。
+
+---
+
+### 各文件格式参考
+
+#### 0-设定速查.md（短·必读）
+```markdown
+# ⚡ 设定速查
+
+## 世界设定
+- **游戏类型**: 像素武侠回合制RPG
+- **战斗**: 外面回合制→穿越后真实，但底层数据是回合制
+- **力量体系**: 外劲→内劲→化劲→凝罡→通玄→归真→无极
+- **金手指**: 代码模式（每日1次30秒，额外回合）
+
+## 写作要求
+- **文风**: 轻松吐槽风
+- **字数**: 每章3000-4000字
+```
+
+#### 1-角色档案.md（含实力变化记录）
+```markdown
+# 👥 角色档案
+
+## 当前角色一览
+| 角色 | 性别 | 身份 | 实力 | 当前位置 | 状态 |
+|:----|:---:|:----|:----|:-------|:----|
+| 江澈 | 男 | 主角 | 基础内功入门 | 青木镇 | 刚打完王铁柱 |
+| ... | ... | ... | ... | ... | ... |
+
+## 实力变化记录
+### 江澈
+| 章节 | 事件 | 实力变化 |
+|:---|:----|:--------|
+| 5 | 获测试宝箱 | 基础内功入门 |
+| | | |
+
+### 九天
+| 章节 | 事件 | 实力变化 |
+|:---|:----|:--------|
+| 3 | 拜师太虚阁 | 太虚阁基础心法 |
+```
+
+#### 2-剧情进度.md
+```markdown
+# 🔗 剧情进度
+
+## 上次写作
+- **日期**: 
+- **最后章节**: 第X章
+- **结尾场景**: [一句话]
+
+## 当前章计划
+- **章节**: 第X章
+- **目标**:
+- **角色**:
+- **回收伏笔**:
+
+## 未解伏笔
+- [ ] [伏笔] | 埋于第X章 | 说明
+
+## 待办
+- [ ] 
+```
+
+#### 3-章节摘要.md（每章一行）
+```markdown
+# 📖 章节摘要
+
+| 章 | 标题 | 一句话剧情 | 结尾 |
+|:-:|:---|:---------|:----|
+| 1 | 穿越青木镇 | 穿越→陈小满→裁缝铺 | 「先把衣裳穿上再说」 |
+| 2 | [标题] | 偷功→林灿灿→魔教提前到 | 「魔教提前七天了」 |
+| 3 | [标题] | 林建钢被杀→被污蔑 | 紫霄种子震颤 |
+| 4 | [标题] | 晒谷场→柴房→濒死 | 「睁开眼睛」 |
+| 5 | 开发者的第一次重生 | 代码模式→反杀→出柴房 | 「外面传来了脚步声」 |
+| 6 | 逃不掉的人，躲不开的命 | 陈小满不走→九天联手→赵长老 | 「村长的声音」 |
+```
+
+#### 4-时间线.md
+```markdown
+# 🕐 故事时间线
+
+**第0天** — 江澈穿越到青木镇（第1章）
+**第1-6天** — 学技能、偷功、练功（第2章）
+**第7天** — 魔教五行使提前到（第2章末）
+**第8-9天** — 林建钢被杀（第3章）
+**第10天** — 晒谷场→柴房→紫霄觉醒（第4章）
+—— 同夜 —— 代码模式→魔教屠村→赵长老（第5-6章）
+```
+
+#### 5-已纠正错误.md（写作前必读）
+```markdown
+# ⚠️ 别再犯了！
+
+- [ ] 陈小满是**男的**（十四五岁少年）
+- [ ] 游戏是**像素武侠回合制**（类似逸剑风云决），不是3D动作
+- [ ] 写每一章前先确认上一章的结尾场景
+- [ ] 九天现在**很菜**（根骨全Lv.1），万法皆通是上限潜力
+- [ ] 太虚阁≈武当，赵长老清风剑法
+```
+
+### 当存档不存在时
+
+如果 `references/《书名》/` 目录不存在，这是新书。创建目录和文件时询问用户：
+1. 书名和类型
+2. 核心设定
+3. 主要角色
+4. 写作偏好
+5. 世界观规则
 
 ## Writing Principles
 
@@ -165,7 +260,7 @@ For the genre the user chooses, follow its conventions. Detailed writing guides 
 
 ## When to Read References
 
-- **存档文件**: Read at the START of every writing session
+- **存档目录**: 按层级顺序读（1层→2层→3层），每次写作会话开始时必做
 - **Writing guide** (`references/writing-guide.md`): Read when:
   - Planning chapter structure and pacing
   - Designing cliffhangers or爽点 sequences
