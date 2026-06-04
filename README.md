@@ -1,18 +1,27 @@
 # OpenClaw Skills Collection
 
-自己写的 OpenClaw Agent Skills 合集。
+A curated collection of [OpenClaw](https://github.com/openclaw) Agent Skills.
 
 ## Skills
 
-| Skill | 说明 |
-|-------|------|
-| [novel-writer](skills/novel-writer/) | 番茄小说写作辅助，多题材网文创作，带存档记忆 |
-| [verify-numbers](skills/verify-numbers/) | 数字/时间/日期验证，防止AI嘴瓢 |
-| [chat-archaeologist](skills/chat-archaeologist/) | 搜索历史聊天记录 |
+| Skill | Description |
+|-------|-------------|
+| [memory-system](skills/memory-system/) | 10-layer memory system: diary + FTS + graph + session indexing |
+| [novel-writer](skills/novel-writer/) | Webnovel writing assistant with save-file system |
+| [chat-archaeologist](skills/chat-archaeologist/) | Search and analyze session history |
+| [verify-numbers](skills/verify-numbers/) | Number/date/time verification for AI outputs |
 
-## 安装
+## Install
 
 ```bash
-clawhub install <skill-name>
-# 或手动解压到 skills/ 目录
+# Via ClawHub (if published)
+clawhub install memory-system
+
+# Manual: clone and symlink
+git clone https://github.com/nzl153/openclaw-skills.git
+ln -s $(pwd)/openclaw-skills/skills/* /path/to/your/skills/
 ```
+
+## License
+
+MIT
