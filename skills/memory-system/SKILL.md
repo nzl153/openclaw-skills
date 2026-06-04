@@ -1,126 +1,113 @@
 ---
 name: memory-system
-description: OpenClaw Agent 10-layer memory system. Diary + FTS search + Memory graph + Session indexing + Auto-maintenance cron pipeline.
+description: 10层记忆系统 — 让你的 OpenClaw Agent 不再忘记你。
 ---
 
-# Memory System Skill
+# 10层记忆系统（Memory System）
 
-A complete memory system for OpenClaw agents: short-term diaries, long-term knowledge, associative graphs, and full-text search.
+让你的 OpenClaw Agent 拥有永不遗忘的记忆。
 
-## Architecture
+从日记到长时记忆，从全文搜索到实体关系图联，从会话索引到能力自检——全链路覆盖。
+
+## 架构一览
 
 ```
-memory/                    # Diaries (daily markdown)
-├── YYYY-MM-DD.md
-├── YYYY-MM-DD.md
-└── ...
-
-MEMORY.md                  # Long-term promoted knowledge
+memory/                    ← 日记（每日 markdown）
+MEMORY.md                  ← 长时记忆（精华沉淀）
 ~/.claw/
-├── memory.json            # Structured facts (TTL-support)
-├── memory-graph.json      # Entity-relation graph
-└── session_index.json     # Cross-session search index
+├── memory.json            ← 结构化事实（支持TTL过期）
+├── memory-graph.json      ← 实体关联图（带温度🔥💧🧊）
+└── session_index.json     ← 跨会话搜索索引
 ```
 
-## 10 Memory Layers
+## 10层记忆详解
 
-| Layer | File | Update | Purpose |
-|-------|------|--------|---------|
-| L1 | `memory/YYYY-MM-DD.md` | Auto | Today's raw events |
-| L2 | `MEMORY.md` | Manual/Promoted | Long-term truths, lessons |
-| L3 | `memory.json` | On-set | Structured facts (user preferences, project info) |
-| L4 | `memory-graph.json` | On-relation | Entity associations with temperature |
-| L5 | `session_index.json` | On-end | Session summaries for cross-search |
-| L6 | `.fts_index.db` | Cron+Incremental | Full-text search across diaries |
-| L7 | `active-context.md` | Cron | Today's snapshot + hot topics |
-| L8 | `~/.reflect/` | Cron | Self-improvement reflections |
-| L9 | `5-已纠正错误.md` | On-error | User correction history |
-| L10 | Capabilities registry | On-register | Tool availability check |
+| 层级 | 载体 | 更新方式 | 作用 |
+|------|------|---------|------|
+| L1 | 日记 | 自动 | 当日原始事件 |
+| L2 | 长时记忆文件 | 手动/自动提升 | 长期真理、教训 |
+| L3 | 结构化事实 | 即时存 | 用户偏好、项目信息 |
+| L4 | 图联 | 有关系时 | 实体关联，带温度标记 |
+| L5 | 会话索引 | 会话结束时 | 跨会话搜索摘要 |
+| L6 | 全文索引 | Cron+增量 | 日记全文搜索 |
+| L7 | 每日快照 | Cron | 今日热点头脑风暴 |
+| L8 | 反思日志 | Cron | 自我改进记录 |
+| L9 | 错误日志 | 被纠正时 | 用户的纠正历史 |
+| L10 | 能力注册表 | 配置时 | 工具可用性自检 |
 
-## Tools
+## 工具
 
-### `remember` — Unified write
+### `remember` — 统一写入
 ```bash
-remember "something happened"              # diary + memory.json + FTS
-remember "quick note" --short               # diary only
-remember "permanent fact" --perm            # memory.json only
-remember "tagged note" --tag=project       # with tag
+remember "发生了一件事"              # 日记 + 事实 + 索引
+remember "速记" --short               # 只记日记
+remember "永久事实" --perm            # 只记结构化
 ```
 
-### `search` — Unified search (4-layer fallback)
+### `search` — 四层降级搜索
 ```bash
-search "keyword"           # session_index → FTS → graph → grep
+search "关键词"    # 会话索引 → 全文搜索 → 图联 → 文件grep
 ```
 
-### `memory_tool` — Structured facts
+### `cap_check` — 能力自检
 ```bash
-memory_tool set <key> <val> [ns]     # store fact
-memory_tool get <key> [ns]           # retrieve
-memory_tool list [ns]                # browse namespace
-memory_tool delete <key> [ns]        # remove
+cap_check    # 一眼看清所有工具可用状态
 ```
 
-### `session_index` — Session history
+### `memory_tool` — 结构化事实
 ```bash
-session_index add <date> <summary>         # record a session
-session_index search <keyword>             # find past sessions
-session_index list [count]                 # recent sessions
+memory_tool set <key> <value> [ns]
+memory_tool get <key> [ns]
+memory_tool list [ns]
 ```
 
-### `graph` — Entity relations
+### `session_index` — 历史会话搜索
 ```bash
-graph context <entity>    # show entity associations (🔥hot 💧warm 🧊cold)
-graph add <A> <rel> <B>   # add relation
-graph stats               # statistics
+session_index add <日期> <摘要>
+session_index search <关键词>
 ```
 
-### `cap_check` — Capability health
+### `graph` — 图联记忆
 ```bash
-cap_check                 # check all registered tools
+graph context <实体名>    # 看关联
+graph add <A> 喜欢 <B>    # 加关系
+graph stats               # 统计
 ```
 
-### `cleanup_graph` — TTL management
+### `cleanup_graph` — 关系老化清理
 ```bash
-cleanup_graph             # remove 45d+ stale relations, freeze 14d+
+cleanup_graph    # 45天无更新自动删除，14天无更新自动冻结
 ```
 
-## Setup
+## 快速开始
 
-### 1. Create workspace tools
-Copy `scripts/` to your workspace, or symlink:
 ```bash
+# 1. 把脚本链接到PATH
 chmod +x scripts/*.py
 ln -s $(pwd)/scripts/*.py /usr/local/bin/
-```
 
-### 2. Initialize
-```bash
+# 2. 初始化日记目录
 mkdir -p memory ~/.claw
-python3 scripts/fts_index.py init
+
+# 3. 试试看
+remember "Hello world" --short
+cap_check
 ```
 
-### 3. Cron pipeline (example, adjust times)
+## 定时维护（示例Cron）
+
 ```
-30 23 * * *  extract_relations    # diary → graph
-35 23 * * *  extract_wisdom       # diary → MEMORY.md
-36 23 * * *  auto_reflect         # reflections
-0  5  * * *  cleanup_memory       # TTL expiry
-30 4  * * *  fts_index init       # daily FTS rebuild
-0  6  * * *  gen_active_context   # refresh daily snapshot
+# 每晚
+30 23 * * *  提取关系写入图联
+35 23 * * *  提取智慧写入长时记忆
+36 23 * * *  自动反思
+
+# 每天凌晨
+30 4  * * *  重建全文索引
+0  6  * * *  刷新每日快照
+5  5  * * *  清理过期TTL
 ```
 
-## Files
+## 许可证
 
-### `references/_template/`
-
-| Template | Description |
-|----------|-------------|
-| `0-设定速查.md` | World settings template (for novel writing) |
-| `1-角色档案.md` | Character sheet template |
-| `2-剧情进度.md` | Plot progress template |
-| `3-章节摘要.md` | Chapter summary template |
-| `4-时间线.md` | Timeline template |
-| `5-已纠正错误.md` | Error log template |
-| `diary.md` | Daily diary template |
-| `MEMORY.md` | Long-term memory template |
-| `active-context.md` | Daily snapshot template |
+MIT
